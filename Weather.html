@@ -999,85 +999,17 @@
             svg.setAttribute("viewBox", "0 0 100 100");
             svg.setAttribute("class", "weather-icon");
             
-            // Définir les dégradés communs
-            const sunGradient = document.createElementNS(svgNS, "radialGradient");
-            sunGradient.setAttribute("id", "sunGradient");
-            sunGradient.innerHTML = `
-                <stop offset="0%" stop-color="#FFFF00" />
-                <stop offset="50%" stop-color="#FFD700" />
-                <stop offset="100%" stop-color="#FF8C00" />
-            `;
-            
-            const moonGradient = document.createElementNS(svgNS, "radialGradient");
-            moonGradient.setAttribute("id", "moonGradient");
-            moonGradient.innerHTML = `
-                <stop offset="0%" stop-color="#4B0082" />
-                <stop offset="50%" stop-color="#483D8B" />
-                <stop offset="100%" stop-color="#6A5ACD" />
-            `;
-            
-            const cloudGradientDay = document.createElementNS(svgNS, "linearGradient");
-            cloudGradientDay.setAttribute("id", "cloudGradientDay");
-            cloudGradientDay.setAttribute("x1", "0%");
-            cloudGradientDay.setAttribute("y1", "0%");
-            cloudGradientDay.setAttribute("x2", "0%");
-            cloudGradientDay.setAttribute("y2", "100%");
-            cloudGradientDay.innerHTML = `
-                <stop offset="0%" stop-color="#FFFFFF" />
-                <stop offset="50%" stop-color="#E0E0E0" />
-                <stop offset="100%" stop-color="#A0A0A0" />
-            `;
-            
-            const rainCloudGradientDay = document.createElementNS(svgNS, "linearGradient");
-            rainCloudGradientDay.setAttribute("id", "rainCloudGradientDay");
-            rainCloudGradientDay.setAttribute("x1", "0%");
-            rainCloudGradientDay.setAttribute("y1", "0%");
-            rainCloudGradientDay.setAttribute("x2", "0%");
-            rainCloudGradientDay.setAttribute("y2", "100%");
-            rainCloudGradientDay.innerHTML = `
-                <stop offset="0%" stop-color="#C0C0C0" />
-                <stop offset="50%" stop-color="#808080" />
-                <stop offset="100%" stop-color="#606060" />
-            `;
-            
-            const nightCloudGradient = document.createElementNS(svgNS, "linearGradient");
-            nightCloudGradient.setAttribute("id", "nightCloudGradient");
-            nightCloudGradient.setAttribute("x1", "0%");
-            nightCloudGradient.setAttribute("y1", "0%");
-            nightCloudGradient.setAttribute("x2", "0%");
-            nightCloudGradient.setAttribute("y2", "100%");
-            nightCloudGradient.innerHTML = `
-                <stop offset="0%" stop-color="#E0E0E0" />
-                <stop offset="50%" stop-color="#A0A0A0" />
-                <stop offset="100%" stop-color="#707070" />
-            `;
-            
-            const nightRainGradient = document.createElementNS(svgNS, "linearGradient");
-            nightRainGradient.setAttribute("id", "nightRainGradient");
-            nightRainGradient.setAttribute("x1", "0%");
-            nightRainGradient.setAttribute("y1", "0%");
-            nightRainGradient.setAttribute("x2", "0%");
-            nightRainGradient.setAttribute("y2", "100%");
-            nightRainGradient.innerHTML = `
-                <stop offset="0%" stop-color="#A0A0A0" />
-                <stop offset="50%" stop-color="#707070" />
-                <stop offset="100%" stop-color="#505050" />
-            `;
-            
-            const stormGradient = document.createElementNS(svgNS, "linearGradient");
-            stormGradient.setAttribute("id", "stormGradient");
-            stormGradient.setAttribute("x1", "0%");
-            stormGradient.setAttribute("y1", "0%");
-            stormGradient.setAttribute("x2", "0%");
-            stormGradient.setAttribute("y2", "100%");
-            stormGradient.innerHTML = `
-                <stop offset="0%" stop-color="#808080" />
-                <stop offset="50%" stop-color="#606060" />
-                <stop offset="100%" stop-color="#404040" />
-            `;
-            
             switch(iconType) {
                 case "sunny":
+                    // Soleil avec dégradé jaune à orange
+                    const sunGradient = document.createElementNS(svgNS, "radialGradient");
+                    sunGradient.setAttribute("id", "sunGradient");
+                    sunGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#FFFF00" />
+                        <stop offset="50%" stop-color="#FFD700" />
+                        <stop offset="100%" stop-color="#FF8C00" />
+                    `;
+                    
                     const sun = document.createElementNS(svgNS, "circle");
                     sun.setAttribute("cx", "50");
                     sun.setAttribute("cy", "50");
@@ -1102,23 +1034,116 @@
                     break;
                     
                 case "partly-cloudy-day":
+                    // Soleil partiellement caché par un nuage
+                    const sunGradient2 = document.createElementNS(svgNS, "radialGradient");
+                    sunGradient2.setAttribute("id", "sunGradient2");
+                    sunGradient2.innerHTML = `
+                        <stop offset="0%" stop-color="#FFFF00" />
+                        <stop offset="50%" stop-color="#FFD700" />
+                        <stop offset="100%" stop-color="#FF8C00" />
+                    `;
+                    
                     const sun2 = document.createElementNS(svgNS, "circle");
                     sun2.setAttribute("cx", "35");
                     sun2.setAttribute("cy", "35");
                     sun2.setAttribute("r", "20");
-                    sun2.setAttribute("fill", "url(#sunGradient)");
+                    sun2.setAttribute("fill", "url(#sunGradient2)");
+                    
+                    // Nuage avec dégradé
+                    const cloudGradientDay = document.createElementNS(svgNS, "linearGradient");
+                    cloudGradientDay.setAttribute("id", "cloudGradientDay");
+                    cloudGradientDay.setAttribute("x1", "0%");
+                    cloudGradientDay.setAttribute("y1", "0%");
+                    cloudGradientDay.setAttribute("x2", "0%");
+                    cloudGradientDay.setAttribute("y2", "100%");
+                    cloudGradientDay.innerHTML = `
+                        <stop offset="0%" stop-color="#FFFFFF" />
+                        <stop offset="50%" stop-color="#E0E0E0" />
+                        <stop offset="100%" stop-color="#A0A0A0" />
+                    `;
                     
                     const cloud = document.createElementNS(svgNS, "path");
                     cloud.setAttribute("d", "M20,60 Q10,50 20,40 Q25,30 35,35 Q40,20 55,25 Q70,15 75,30 Q90,25 85,45 Q95,50 85,55 Q90,65 75,60 Q65,70 55,65 Q45,75 35,70 Q25,75 20,60");
                     cloud.setAttribute("fill", "url(#cloudGradientDay)");
                     
-                    svg.appendChild(sunGradient);
+                    svg.appendChild(sunGradient2);
                     svg.appendChild(sun2);
                     svg.appendChild(cloudGradientDay);
                     svg.appendChild(cloud);
                     break;
                     
+                case "cloudy-day":
+                case "cloudy-night":
+                    // Temps nuageux
+                    const cloudyGradient = document.createElementNS(svgNS, "linearGradient");
+                    cloudyGradient.setAttribute("id", "cloudyGradient");
+                    cloudyGradient.setAttribute("x1", "0%");
+                    cloudyGradient.setAttribute("y1", "0%");
+                    cloudyGradient.setAttribute("x2", "0%");
+                    cloudyGradient.setAttribute("y2", "100%");
+                    cloudyGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#D0D0D0" />
+                        <stop offset="50%" stop-color="#A0A0A0" />
+                        <stop offset="100%" stop-color="#808080" />
+                    `;
+                    
+                    const cloud1 = document.createElementNS(svgNS, "path");
+                    cloud1.setAttribute("d", "M20,50 Q10,40 20,30 Q25,20 35,25 Q40,10 55,15 Q70,5 75,20 Q90,15 85,35 Q95,40 85,45 Q90,55 75,50 Q65,60 55,55 Q45,65 35,60 Q25,65 20,50");
+                    cloud1.setAttribute("fill", "url(#cloudyGradient)");
+                    
+                    const cloud2 = document.createElementNS(svgNS, "path");
+                    cloud2.setAttribute("d", "M40,65 Q30,55 40,45 Q45,35 55,40 Q60,25 75,30 Q90,25 85,45 Q95,50 85,55 Q90,65 75,60 Q65,70 55,65 Q45,75 35,70 Q25,75 20,60");
+                    cloud2.setAttribute("fill", "url(#cloudyGradient)");
+                    cloud2.setAttribute("opacity", "0.7");
+                    
+                    svg.appendChild(cloudyGradient);
+                    svg.appendChild(cloud1);
+                    svg.appendChild(cloud2);
+                    break;
+                    
+                case "fog-day":
+                case "fog-night":
+                    // Brouillard
+                    const fogGradient = document.createElementNS(svgNS, "linearGradient");
+                    fogGradient.setAttribute("id", "fogGradient");
+                    fogGradient.setAttribute("x1", "0%");
+                    fogGradient.setAttribute("y1", "0%");
+                    fogGradient.setAttribute("x2", "0%");
+                    fogGradient.setAttribute("y2", "100%");
+                    fogGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#F0F0F0" />
+                        <stop offset="100%" stop-color="#C0C0C0" />
+                    `;
+                    
+                    // Lignes de brouillard
+                    for (let i = 0; i < 5; i++) {
+                        const fogLine = document.createElementNS(svgNS, "rect");
+                        fogLine.setAttribute("x", "15");
+                        fogLine.setAttribute("y", `${30 + i * 15}`);
+                        fogLine.setAttribute("width", "70");
+                        fogLine.setAttribute("height", "8");
+                        fogLine.setAttribute("fill", "url(#fogGradient)");
+                        fogLine.setAttribute("opacity", `${0.7 - i * 0.1}`);
+                        svg.appendChild(fogLine);
+                    }
+                    
+                    svg.appendChild(fogGradient);
+                    break;
+                    
                 case "rain-day":
+                    // Nuage de pluie avec gouttes (jour)
+                    const rainCloudGradientDay = document.createElementNS(svgNS, "linearGradient");
+                    rainCloudGradientDay.setAttribute("id", "rainCloudGradientDay");
+                    rainCloudGradientDay.setAttribute("x1", "0%");
+                    rainCloudGradientDay.setAttribute("y1", "0%");
+                    rainCloudGradientDay.setAttribute("x2", "0%");
+                    rainCloudGradientDay.setAttribute("y2", "100%");
+                    rainCloudGradientDay.innerHTML = `
+                        <stop offset="0%" stop-color="#C0C0C0" />
+                        <stop offset="50%" stop-color="#808080" />
+                        <stop offset="100%" stop-color="#606060" />
+                    `;
+                    
                     const rainCloud = document.createElementNS(svgNS, "path");
                     rainCloud.setAttribute("d", "M20,50 Q10,40 20,30 Q25,20 35,25 Q40,10 55,15 Q70,5 75,20 Q90,15 85,35 Q95,40 85,45 Q90,55 75,50 Q65,60 55,55 Q45,65 35,60 Q25,65 20,50");
                     rainCloud.setAttribute("fill", "url(#rainCloudGradientDay)");
@@ -1139,6 +1164,15 @@
                     break;
                     
                 case "night-clear":
+                    // Lune avec dégradé bleu
+                    const moonGradient = document.createElementNS(svgNS, "radialGradient");
+                    moonGradient.setAttribute("id", "moonGradient");
+                    moonGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#4B0082" />
+                        <stop offset="50%" stop-color="#483D8B" />
+                        <stop offset="100%" stop-color="#6A5ACD" />
+                    `;
+                    
                     const moon = document.createElementNS(svgNS, "path");
                     moon.setAttribute("d", "M50,30 Q70,50 50,70 Q30,50 50,30");
                     moon.setAttribute("fill", "url(#moonGradient)");
@@ -1148,21 +1182,56 @@
                     break;
                     
                 case "partly-cloudy-night":
+                    // Lune partiellement cachée par un nuage (nuit)
+                    const moonGradient2 = document.createElementNS(svgNS, "radialGradient");
+                    moonGradient2.setAttribute("id", "moonGradient2");
+                    moonGradient2.innerHTML = `
+                        <stop offset="0%" stop-color="#4B0082" />
+                        <stop offset="50%" stop-color="#483D8B" />
+                        <stop offset="100%" stop-color="#6A5ACD" />
+                    `;
+                    
                     const moon2 = document.createElementNS(svgNS, "path");
                     moon2.setAttribute("d", "M35,35 Q55,55 35,75 Q15,55 35,35");
-                    moon2.setAttribute("fill", "url(#moonGradient)");
+                    moon2.setAttribute("fill", "url(#moonGradient2)");
+                    
+                    // Nuage nocturne
+                    const nightCloudGradient = document.createElementNS(svgNS, "linearGradient");
+                    nightCloudGradient.setAttribute("id", "nightCloudGradient");
+                    nightCloudGradient.setAttribute("x1", "0%");
+                    nightCloudGradient.setAttribute("y1", "0%");
+                    nightCloudGradient.setAttribute("x2", "0%");
+                    nightCloudGradient.setAttribute("y2", "100%");
+                    nightCloudGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#E0E0E0" />
+                        <stop offset="50%" stop-color="#A0A0A0" />
+                        <stop offset="100%" stop-color="#707070" />
+                    `;
                     
                     const nightCloud = document.createElementNS(svgNS, "path");
                     nightCloud.setAttribute("d", "M20,60 Q10,50 20,40 Q25,30 35,35 Q40,20 55,25 Q70,15 75,30 Q90,25 85,45 Q95,50 85,55 Q90,65 75,60 Q65,70 55,65 Q45,75 35,70 Q25,75 20,60");
                     nightCloud.setAttribute("fill", "url(#nightCloudGradient)");
                     
-                    svg.appendChild(moonGradient);
+                    svg.appendChild(moonGradient2);
                     svg.appendChild(moon2);
                     svg.appendChild(nightCloudGradient);
                     svg.appendChild(nightCloud);
                     break;
                     
                 case "rain-night":
+                    // Pluie nocturne
+                    const nightRainGradient = document.createElementNS(svgNS, "linearGradient");
+                    nightRainGradient.setAttribute("id", "nightRainGradient");
+                    nightRainGradient.setAttribute("x1", "0%");
+                    nightRainGradient.setAttribute("y1", "0%");
+                    nightRainGradient.setAttribute("x2", "0%");
+                    nightRainGradient.setAttribute("y2", "100%");
+                    nightRainGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#A0A0A0" />
+                        <stop offset="50%" stop-color="#707070" />
+                        <stop offset="100%" stop-color="#505050" />
+                    `;
+                    
                     const nightRainCloud = document.createElementNS(svgNS, "path");
                     nightRainCloud.setAttribute("d", "M20,50 Q10,40 20,30 Q25,20 35,25 Q40,10 55,15 Q70,5 75,20 Q90,15 85,35 Q95,40 85,45 Q90,55 75,50 Q65,60 55,55 Q45,65 35,60 Q25,65 20,50");
                     nightRainCloud.setAttribute("fill", "url(#nightRainGradient)");
@@ -1184,6 +1253,19 @@
                     
                 case "storm-day":
                 case "storm-night":
+                    // Orage avec éclair jaune
+                    const stormGradient = document.createElementNS(svgNS, "linearGradient");
+                    stormGradient.setAttribute("id", "stormGradient");
+                    stormGradient.setAttribute("x1", "0%");
+                    stormGradient.setAttribute("y1", "0%");
+                    stormGradient.setAttribute("x2", "0%");
+                    stormGradient.setAttribute("y2", "100%");
+                    stormGradient.innerHTML = `
+                        <stop offset="0%" stop-color="#808080" />
+                        <stop offset="50%" stop-color="#606060" />
+                        <stop offset="100%" stop-color="#404040" />
+                    `;
+                    
                     const stormCloud = document.createElementNS(svgNS, "path");
                     stormCloud.setAttribute("d", "M15,50 Q5,40 15,30 Q20,20 30,25 Q35,10 50,15 Q65,5 70,20 Q85,15 80,35 Q90,40 80,45 Q85,55 70,50 Q60,60 50,55 Q40,65 30,60 Q20,65 15,50");
                     stormCloud.setAttribute("fill", "url(#stormGradient)");
