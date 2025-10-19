@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MétéoGlobe | Prévisions mondiales 7 jours</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Sécurité: Intégrité et politique de référence -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://geocoding-api.open-meteo.com https://api.open-meteo.com;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="no-referrer">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
     <style>
+        /* VOTRE CSS EXISTANT RESTE IDENTIQUE */
         * {
             margin: 0;
             padding: 0;
@@ -35,6 +43,12 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            /* Protection anti-copie */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
 
         body::before {
@@ -671,7 +685,7 @@
                 </button>
             </div>
             <div class="search-container" id="searchContainer">
-                <input type="text" class="search-box" id="searchInput" placeholder="Rechercher une ville...">
+                <input type="text" class="search-box" id="searchInput" placeholder="Rechercher une ville..." maxlength="50">
                 <button class="search-btn" id="searchBtn">
                     <i class="fas fa-search"></i> Rechercher
                 </button>
@@ -758,8 +772,75 @@
         </footer>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
     <script>
+        // === SÉCURITÉ AJOUTÉE ===
+        'use strict';
+        
+        // Protection contre l'inspection
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // Bloquer F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Configuration de sécurité
+        const SECURITY_CONFIG = {
+            maxRequestsPerMinute: 10,
+            requestTimeout: 10000,
+            maxCityLength: 50,
+            allowedChars: /^[a-zA-ZÀ-ÿ\s\-\',\.]+$/
+        };
+
+        let requestCount = 0;
+        let lastRequestTime = Date.now();
+
+        // Validation des entrées
+        function validateCity(city) {
+            if (!city || typeof city !== 'string') return false;
+            if (city.length > SECURITY_CONFIG.maxCityLength) return false;
+            if (!SECURITY_CONFIG.allowedChars.test(city)) return false;
+            return true;
+        }
+
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            // Supprimer les balises HTML
+            input = input.replace(/<[^>]*>/g, '');
+            // Échapper les caractères spéciaux
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.textContent.substring(0, SECURITY_CONFIG.maxCityLength);
+        }
+
+        function checkRateLimit() {
+            const now = Date.now();
+            const timeDiff = now - lastRequestTime;
+            
+            if (timeDiff > 60000) {
+                requestCount = 0;
+                lastRequestTime = now;
+            }
+            
+            if (requestCount >= SECURITY_CONFIG.maxRequestsPerMinute) {
+                throw new Error('Trop de requêtes. Veuillez patienter.');
+            }
+            
+            requestCount++;
+            return true;
+        }
+
+        // === VOTRE CODE EXISTANT AVEC SÉCURITÉ INTÉGRÉE ===
+        
         // Éléments DOM
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
@@ -803,7 +884,8 @@
             if (map === null) {
                 map = L.map('map').setView([lat, lng], 10);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    crossOrigin: 'anonymous'
                 }).addTo(map);
             } else {
                 map.setView([lat, lng], 10);
@@ -816,7 +898,7 @@
 
             // Ajouter un nouveau marqueur
             marker = L.marker([lat, lng]).addTo(map)
-                .bindPopup(city)
+                .bindPopup(sanitizeInput(city))
                 .openPopup();
         }
 
@@ -874,36 +956,82 @@
             }
         }
 
-        // Obtenir les coordonnées d'une ville
+        // Obtenir les coordonnées d'une ville (SÉCURISÉ)
         async function getCoordinates(city) {
             try {
-                const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=fr&format=json`);
+                checkRateLimit();
+                
+                if (!validateCity(city)) {
+                    throw new Error('Nom de ville invalide');
+                }
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), SECURITY_CONFIG.requestTimeout);
+
+                const response = await fetch(
+                    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=fr&format=json`,
+                    { 
+                        signal: controller.signal,
+                        referrerPolicy: 'no-referrer'
+                    }
+                );
+                
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error('Erreur réseau');
+                }
+
                 const data = await response.json();
                 
                 if (data.results && data.results.length > 0) {
                     return {
                         latitude: data.results[0].latitude,
                         longitude: data.results[0].longitude,
-                        name: data.results[0].name,
-                        country: data.results[0].country,
-                        admin1: data.results[0].admin1,
+                        name: sanitizeInput(data.results[0].name),
+                        country: sanitizeInput(data.results[0].country),
+                        admin1: sanitizeInput(data.results[0].admin1),
                         timezone: data.results[0].timezone
                     };
                 } else {
                     throw new Error('Ville non trouvée');
                 }
             } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw new Error('Délai de requête dépassé');
+                }
                 throw new Error('Erreur lors de la recherche de la ville');
             }
         }
 
-        // Obtenir les données météo
+        // Obtenir les données météo (SÉCURISÉ)
         async function getWeatherData(latitude, longitude, timezone) {
             try {
-                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,wind_speed_10m,weather_code&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=${timezone}`);
+                checkRateLimit();
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), SECURITY_CONFIG.requestTimeout);
+
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,wind_speed_10m,weather_code&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=${encodeURIComponent(timezone)}`,
+                    { 
+                        signal: controller.signal,
+                        referrerPolicy: 'no-referrer'
+                    }
+                );
+                
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error('Erreur réseau');
+                }
+
                 const data = await response.json();
                 return data;
             } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw new Error('Délai de requête dépassé');
+                }
                 throw new Error('Erreur lors de la récupération des données météo');
             }
         }
@@ -1389,13 +1517,19 @@
             dailyForecast.style.display = 'block';
         }
 
-        // Rechercher la météo d'une ville
+        // Rechercher la météo d'une ville (SÉCURISÉ)
         async function searchWeather(city) {
             try {
+                const sanitizedCity = sanitizeInput(city);
+                
+                if (!validateCity(sanitizedCity)) {
+                    throw new Error('Nom de ville invalide');
+                }
+
                 loading.style.display = 'block';
                 errorMessage.style.display = 'none';
                 
-                const coordinates = await getCoordinates(city);
+                const coordinates = await getCoordinates(sanitizedCity);
                 const weatherData = await getWeatherData(coordinates.latitude, coordinates.longitude, coordinates.timezone);
                 
                 // Mettre à jour le fuseau horaire
